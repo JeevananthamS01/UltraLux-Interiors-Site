@@ -709,196 +709,253 @@
   }
 
   function initContactForm() {
-    const form = document.querySelector("#ultra-contact-form");
+  const form = document.querySelector("#ultra-contact-form");
 
-    if (!form) return;
+  if (!form) return;
 
-    const fullname = document.querySelector("#ultra-contact-fullname");
+  const fullname = document.querySelector("#ultra-contact-fullname");
+  const phone = document.querySelector("#ultra-contact-phone");
+  const email = document.querySelector("#ultra-contact-email");
+  const service = document.querySelector("#ultra-contact-service");
+  const message = document.querySelector("#ultra-contact-message");
+  const submitButton = document.querySelector("#ultra-contact-submit-button");
 
-    const phone = document.querySelector("#ultra-contact-phone");
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzCeIX6RUJv6N-yajXoFKwq64C9WWVci8b5jRz3biv7g-Fcy5X_7TI0YoKc5fQT8qs0/exec";
 
-    const email = document.querySelector("#ultra-contact-email");
+  function showError(field, messageText) {
+    if (!field) return false;
 
-    const service = document.querySelector("#ultra-contact-service");
+    field.classList.add("ultra-field-error");
 
-    const message = document.querySelector("#ultra-contact-message");
+    let error = field.parentElement.querySelector(".ultra-form-error");
 
-    function showError(field, messageText) {
-      if (!field) return false;
-
-      field.classList.add("ultra-field-error");
-
-      let error = field.parentElement.querySelector(".ultra-form-error");
-
-      if (!error) {
-        error = document.createElement("span");
-
-        error.className = "ultra-form-error";
-
-        field.parentElement.appendChild(error);
-      }
-
-      error.textContent = messageText;
-
-      return false;
+    if (!error) {
+      error = document.createElement("span");
+      error.className = "ultra-form-error";
+      field.parentElement.appendChild(error);
     }
 
-    function clearError(field) {
-      if (!field) return;
+    error.textContent = messageText;
 
-      field.classList.remove("ultra-field-error");
-
-      const error = field.parentElement.querySelector(".ultra-form-error");
-
-      if (error) {
-        error.remove();
-      }
-    }
-
-    function validateFullname() {
-      if (!fullname) return true;
-
-      const value = fullname.value.trim();
-
-      clearError(fullname);
-
-      if (!value) {
-        return showError(fullname, "Please enter your name.");
-      }
-
-      if (!/^[A-Za-z\s.'-]{2,60}$/.test(value)) {
-        return showError(fullname, "Please enter a valid name.");
-      }
-
-      return true;
-    }
-
-    function validatePhone() {
-      if (!phone) return true;
-
-      const value = phone.value.trim();
-
-      clearError(phone);
-
-      if (!value) {
-        return showError(phone, "Please enter your phone number.");
-      }
-
-      if (!/^\+?[0-9]{10,15}$/.test(value)) {
-        return showError(phone, "Please enter a valid phone number.");
-      }
-
-      return true;
-    }
-
-    function validateEmail() {
-      if (!email) return true;
-
-      const value = email.value.trim();
-
-      clearError(email);
-
-      if (!value) {
-        return showError(email, "Please enter your email address.");
-      }
-
-      if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value)) {
-        return showError(email, "Please enter a valid email address.");
-      }
-
-      return true;
-    }
-
-    function validateService() {
-      if (!service) return true;
-
-      clearError(service);
-
-      if (!service.value.trim()) {
-        return showError(service, "Please select a service.");
-      }
-
-      return true;
-    }
-
-    function validateMessage() {
-      if (!message) return true;
-
-      const value = message.value.trim();
-
-      clearError(message);
-
-      if (!value) {
-        return showError(message, "Please enter your message.");
-      }
-
-      if (value.length < 10) {
-        return showError(message, "Please enter at least 10 characters.");
-      }
-
-      return true;
-    }
-
-    if (fullname) {
-      fullname.addEventListener("input", function () {
-        fullname.value = fullname.value.replace(/[^A-Za-z\s.'-]/g, "");
-
-        validateFullname();
-      });
-    }
-
-    if (phone) {
-      phone.addEventListener("input", function () {
-        phone.value = phone.value.replace(/[^0-9+]/g, "");
-
-        if (phone.value.indexOf("+") > 0) {
-          phone.value = "+" + phone.value.replace(/\+/g, "");
-        }
-
-        validatePhone();
-      });
-    }
-
-    if (email) {
-      email.addEventListener("input", validateEmail);
-    }
-
-    if (service) {
-      service.addEventListener("change", validateService);
-    }
-
-    if (message) {
-      message.addEventListener("input", validateMessage);
-    }
-
-    form.addEventListener("submit", function (event) {
-      const validName = validateFullname();
-
-      const validPhone = validatePhone();
-
-      const validEmail = validateEmail();
-
-      const validService = validateService();
-
-      const validMessage = validateMessage();
-
-      if (
-        !validName ||
-        !validPhone ||
-        !validEmail ||
-        !validService ||
-        !validMessage
-      ) {
-        event.preventDefault();
-
-        const firstError = form.querySelector(".ultra-field-error");
-
-        if (firstError) {
-          firstError.focus();
-        }
-      }
-    });
+    return false;
   }
+
+  function clearError(field) {
+    if (!field) return;
+
+    field.classList.remove("ultra-field-error");
+
+    const error = field.parentElement.querySelector(".ultra-form-error");
+
+    if (error) {
+      error.remove();
+    }
+  }
+
+  function validateFullname() {
+    if (!fullname) return true;
+
+    const value = fullname.value.trim();
+
+    clearError(fullname);
+
+    if (!value) {
+      return showError(fullname, "Please enter your name.");
+    }
+
+    if (!/^[A-Za-z][A-Za-z\s.'-]{1,59}$/.test(value)) {
+      return showError(fullname, "Please enter a valid name.");
+    }
+
+    return true;
+  }
+
+  function validatePhone() {
+    if (!phone) return true;
+
+    const value = phone.value.trim();
+
+    clearError(phone);
+
+    if (!value) {
+      return showError(phone, "Please enter your phone number.");
+    }
+
+    if (!/^\+?[0-9]{10,15}$/.test(value)) {
+      return showError(phone, "Please enter a valid phone number.");
+    }
+
+    return true;
+  }
+
+  function validateEmail() {
+    if (!email) return true;
+
+    const value = email.value.trim();
+
+    clearError(email);
+
+    if (!value) {
+      return showError(email, "Please enter your email address.");
+    }
+
+    const emailRegex = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
+
+    if (!emailRegex.test(value)) {
+      return showError(email, "Please enter a valid email address.");
+    }
+
+    return true;
+  }
+
+  function validateService() {
+    if (!service) return true;
+
+    clearError(service);
+
+    const value = service.value.trim();
+
+    if (!value) {
+      return showError(service, "Please select a service.");
+    }
+
+    const validServices = [
+      "Home Interiors",
+      "Modular Kitchen",
+      "Tv Unit",
+      "Wardropes",
+      "Wall Panelling",
+      "False Ceiling",
+      "Pooja Unit",
+    ];
+
+    if (!validServices.includes(value)) {
+      return showError(service, "Please select a valid service.");
+    }
+
+    return true;
+  }
+
+  function validateMessage() {
+    if (!message) return true;
+
+    const value = message.value.trim();
+
+    clearError(message);
+
+    if (!value) {
+      return showError(message, "Please enter your message.");
+    }
+
+    if (value.length < 10) {
+      return showError(message, "Please enter at least 10 characters.");
+    }
+
+    if (value.length > 5000) {
+      return showError(message, "Your message is too long.");
+    }
+
+    return true;
+  }
+
+  if (fullname) {
+    fullname.addEventListener("input", function () {
+      fullname.value = fullname.value.replace(/[^A-Za-z\s.'-]/g, "");
+      validateFullname();
+    });
+
+    fullname.addEventListener("blur", validateFullname);
+  }
+
+  if (phone) {
+    phone.addEventListener("input", function () {
+      let value = phone.value.replace(/[^0-9+]/g, "");
+
+      if (value.includes("+")) {
+        value = "+" + value.replace(/\+/g, "");
+      }
+
+      phone.value = value.slice(0, 16);
+
+      validatePhone();
+    });
+
+    phone.addEventListener("blur", validatePhone);
+  }
+
+  if (email) {
+    email.addEventListener("input", validateEmail);
+    email.addEventListener("blur", validateEmail);
+  }
+
+  if (service) {
+    service.addEventListener("change", validateService);
+    service.addEventListener("blur", validateService);
+  }
+
+  if (message) {
+    message.addEventListener("input", validateMessage);
+    message.addEventListener("blur", validateMessage);
+  }
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const validName = validateFullname();
+    const validPhone = validatePhone();
+    const validEmail = validateEmail();
+    const validService = validateService();
+    const validMessage = validateMessage();
+
+    if (
+      !validName ||
+      !validPhone ||
+      !validEmail ||
+      !validService ||
+      !validMessage
+    ) {
+      const firstError = form.querySelector(".ultra-field-error");
+
+      if (firstError) {
+        firstError.focus();
+      }
+
+      return;
+    }
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.dataset.originalText = submitButton.innerText;
+      submitButton.innerText = "Sending...";
+    }
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        form.reset();
+        alert("Your message has been sent successfully.");
+      } else {
+        alert(result.message || "Unable to send your message.");
+      }
+    } catch (error) {
+      alert("Unable to send your message. Please try again.");
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerText =
+          submitButton.dataset.originalText || "Send Message";
+      }
+    }
+  });
+}
 
   function initScrollTriggerRefresh() {
     if (typeof ScrollTrigger === "undefined") {

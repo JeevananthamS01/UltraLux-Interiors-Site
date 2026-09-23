@@ -1267,11 +1267,7 @@
               data-offset="100"
               data-direction="right"
             >
-              <form
-                action="https://antra.ibthemespro.com/mail.php"
-                method="post"
-                id="ultra-contact-form"
-              >
+              <form id="ultra-contact-form" target="ultra-contact-form-frame">
                 <div class="ultra-contact-form-row">
                   <div class="ultra-contact-form-column">
                     <div
@@ -1286,6 +1282,8 @@
                         name="fullname"
                         class="ultra-contact-form-control"
                         placeholder="Designer"
+                        maxlength="60"
+                        autocomplete="name"
                       />
                     </div>
                   </div>
@@ -1298,11 +1296,13 @@
                       <h4 class="ultra-contact-form-title">Phone *</h4>
 
                       <input
-                        type="text"
+                        type="tel"
                         id="ultra-contact-phone"
                         name="phone"
                         class="ultra-contact-form-control"
-                        placeholder="+(084) 456-0789"
+                        placeholder="+918765432109"
+                        maxlength="16"
+                        autocomplete="tel"
                       />
                     </div>
                   </div>
@@ -1317,11 +1317,13 @@
                       <h4 class="ultra-contact-form-title">Email Address *</h4>
 
                       <input
-                        type="text"
+                        type="email"
                         id="ultra-contact-email"
                         name="email"
                         class="ultra-contact-form-control"
                         placeholder="support@example.com"
+                        maxlength="254"
+                        autocomplete="email"
                       />
                     </div>
                   </div>
@@ -1333,13 +1335,25 @@
                     >
                       <h4 class="ultra-contact-form-title">Services *</h4>
 
-                      <input
-                        type="text"
+                      <select
                         id="ultra-contact-service"
                         name="service"
                         class="ultra-contact-form-control"
-                        placeholder="I want to"
-                      />
+                        required
+                      >
+                        <option value="" selected disabled>
+                          Select a service
+                        </option>
+                        <option value="Home Interiors">Home Interiors</option>
+                        <option value="Modular Kitchen">Modular Kitchen</option>
+                        <option value="Tv Unit">TV Unit</option>
+                        <option value="Wardropes">Wardropes</option>
+                        <option value="Wall Panelling">Wall Panelling</option>
+                        <option value="Pooja Unit">
+                          Pooja Unit
+                        </option>
+                        <option value="False Ceiling">False Ceiling</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1357,6 +1371,7 @@
                         name="message"
                         cols="30"
                         rows="5"
+                        maxlength="5000"
                         class="ultra-contact-form-control ultra-contact-message-control"
                         placeholder="Your message.."
                       ></textarea>
@@ -1381,6 +1396,12 @@
                   </button>
                 </div>
               </form>
+
+              <iframe
+                name="ultra-contact-form-frame"
+                id="ultra-contact-form-frame"
+                style="display: none"
+              ></iframe>
             </div>
           </div>
         </div>
